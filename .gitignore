@@ -1,9 +1,8 @@
 bin/
 build/
-lib/
+lib/libmyslam.so
 Testing/
 thirdparty/g2o/build/
-thirdparty/g2o/lib/
 thirdparty/gflags/build/
 thirdparty/glog/build/
 
