@@ -1,0 +1,33 @@
+%YAML:1.0
+# data
+# the tum dataset directory, change it to yours! 
+# dataset_dir: /media/xiang/Data/Dataset/Kitti/dataset/sequences/00
+dataset_dir: /home/tong/Datasets/kitti/sequences/05
+
+# # camera intrinsics
+# camera.fx: 517.3
+# camera.fy: 516.5
+# camera.cx: 325.1
+# camera.cy: 249.7
+
+# # camera intrinsics: KITTI 00-02
+# camera.fx: 718.856
+# camera.fy: 718.856
+# camera.cx: 607.1928
+# camera.cy: 185.2157
+
+# # camera intrinsics: KITTI 03
+# camera.fx: 721.5377
+# camera.fy: 721.5377
+# camera.cx: 609.5593
+# camera.cy: 172.854
+
+# camera intrinsics: KITTI 04-12
+camera.fx: 707.0912
+camera.fy: 707.0912
+camera.cx: 601.8873
+camera.cy: 183.1104
+
+num_features: 150
+num_features_init: 50
+num_features_tracking: 50

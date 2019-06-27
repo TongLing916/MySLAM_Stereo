@@ -1,0 +1,15 @@
+bin/
+build/
+lib/
+Testing/
+thirdparty/g2o/build/
+thirdparty/g2o/lib/
+thirdparty/gflags/build/
+thirdparty/glog/build/
+
+ch13.kdev4
+.kdev4/
+.vscode/
+
+
+
