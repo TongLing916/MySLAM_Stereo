@@ -31,6 +31,8 @@ void Viewer::UpdateMap()
     assert(map_ != nullptr);
     active_keyframes_ = map_->GetActiveKeyFrames();
     active_landmarks_ = map_->GetActiveMapPoints();
+    all_keyframes_ = map_->GetAllKeyFrames();
+    all_landmarks_ = map_->GetAllMapPoints();
     map_updated_ = true;
 }
 
@@ -164,14 +166,14 @@ void Viewer::DrawFrame(Frame::Ptr frame, const float *color)
 void Viewer::DrawMapPoints()
 {
     const float red[3] = {1.0, 0, 0};
-    for (auto &kf : active_keyframes_)
+    for (auto &kf : all_keyframes_)
     {
         DrawFrame(kf.second, red);
     }
 
     glPointSize(2);
     glBegin(GL_POINTS);
-    for (auto &landmark : active_landmarks_)
+    for (auto &landmark : all_landmarks_)
     {
         auto pos = landmark.second->Pos();
         glColor3f(red[0], red[1], red[2]);
