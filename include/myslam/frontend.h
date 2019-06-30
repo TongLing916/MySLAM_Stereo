@@ -43,6 +43,16 @@ public:
         return status_;
     }
 
+    std::vector<std::vector<double>> GetAllTrackedFrames() const
+    {
+        return all_tracked_frames_;
+    }
+
+    std::vector<std::vector<double>> GetAllTrackedKeyFrames() const
+    {
+        return all_tracked_keyframes_;
+    }
+
     void SetMap(Map::Ptr map)
     {
         map_ = map;
@@ -147,6 +157,10 @@ private:
     // serve as initial guess for prediction of current frame's pose
     SE3 relative_motion_;
 
+    // save frame's timestamp, tx, ty, tz, qx, qy, qz, qw
+    std::vector<std::vector<double>> all_tracked_frames_;
+    std::vector<std::vector<double>> all_tracked_keyframes_;
+
     int tracking_inliers_ = 0; // inliers, used for testing new keyframes
 
     // params
@@ -157,7 +171,8 @@ private:
     int num_features_needed_for_keyframe_ = 80;
 
     // utilities
-    cv::Ptr<cv::GFTTDetector> gftt_; // detector of "good features to track"
+    // cv::Ptr<cv::GFTTDetector> gftt_; // detector of "good features to track"
+     cv::Ptr<cv::ORB> orb_; // detector of ORB
 };
 
 } // namespace myslam

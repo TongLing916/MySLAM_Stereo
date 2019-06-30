@@ -14,7 +14,10 @@ namespace myslam
 
 Frontend::Frontend()
 {
-    gftt_ = cv::GFTTDetector::create(Config::Get<int>("num_features"), 0.01, 20);
+    // nfeatures, scaleFactor, nlevels, edgeThreshold, firstLevel, WTA_K, scoreType, patchSize, fastThreshold
+    orb_ = cv::ORB::create(Config::Get<int>("num_features"), 1.2f, 8, 31, 0, 2, cv::ORB::HARRIS_SCORE, 20);
+    // gftt_ = cv::GFTTDetector::create(Config::Get<int>("num_features"), 0.01, 20);
+    
     num_features_init_ = Config::Get<int>("num_features_init");
     num_features_ = Config::Get<int>("num_features");
 }
@@ -35,6 +38,16 @@ bool Frontend::AddFrame(myslam::Frame::Ptr frame)
     case FrontendStatus::LOST:
         Reset();
         break;
+    }
+
+    if (status_ == FrontendStatus::TRACKING_GOOD || status_ == FrontendStatus::TRACKING_BAD)
+    {
+        std::vector<double> tracked_frame{current_frame_->time_stamp_};
+        std::vector<double> current_pose = Se3ToVectorD(current_frame_->Pose().inverse());  // Attention: we need to use T_w_c to recover the real camera pose
+        tracked_frame.insert(tracked_frame.end(), current_pose.begin(), current_pose.end());
+        all_tracked_frames_.emplace_back(tracked_frame);
+        if (current_frame_->is_keyframe_)
+            all_tracked_keyframes_.emplace_back(tracked_frame);
     }
 
     last_frame_ = current_frame_;
@@ -340,7 +353,8 @@ int Frontend::DetectFeatures()
     }
 
     std::vector<cv::KeyPoint> keypoints;
-    gftt_->detect(current_frame_->left_img_, keypoints, mask);
+    orb_->detect(current_frame_->left_img_, keypoints, mask);
+    // gftt_->detect(current_frame_->left_img_, keypoints, mask);
     int cnt_detected = 0;
     for (auto &kp : keypoints)
     {

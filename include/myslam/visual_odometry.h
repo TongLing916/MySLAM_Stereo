@@ -40,6 +40,18 @@ public:
     bool Step();
 
     /**
+     * print time stamps and pose of all tracked frames in TUM-Style
+     * time_stamp, tx, ty, tz, qx, qy, qz, qw
+     */
+    void PrintAllFrames();
+
+    /**
+     * print time stamps and pose of all tracked keyframes in TUM-Style
+     * time_stamp, tx, ty, tz, qx, qy, qz, qw
+     */
+    void PrintAllKeyFrames();
+
+    /**
      * get frontend status
      */
     FrontendStatus GetFrontendStatus() const

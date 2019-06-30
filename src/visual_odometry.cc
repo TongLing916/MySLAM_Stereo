@@ -53,6 +53,9 @@ void VisualOdometry::Run()
     backend_->Stop();
     viewer_->Close();
 
+    PrintAllKeyFrames();
+    PrintAllFrames();
+
     LOG(INFO) << "VO exit";
 }
 
@@ -68,6 +71,74 @@ bool VisualOdometry::Step()
     auto time_used = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
     LOG(INFO) << "VO cost time: " << time_used.count() << " seconds.";
     return success;
+}
+
+void VisualOdometry::PrintAllFrames()
+{
+    std::string prefix = "AllFrames_";
+
+    // obtain the current time
+    auto t = std::time(nullptr);
+    auto tm = *std::localtime(&t);
+    std::ostringstream oss;
+    oss << std::put_time(&tm, "%Y-%m-%d_%H-%M-%S");
+    auto time_str = oss.str();
+
+    std::string output_name = prefix + time_str + ".txt";
+
+    std::vector<std::vector<double>> all_tracked_frames = frontend_->GetAllTrackedFrames();
+    if (all_tracked_frames.size() > 0)
+    {
+        std::ofstream f;
+        f.open(output_name);
+
+        for (const auto &tf : all_tracked_frames)
+        {
+            f << std::setprecision(5) << tf[0] << " "
+              << tf[1] << " " << tf[2] << " " << tf[3] << " " <<
+                tf[4] << " " << tf[5] << " " << tf[6] << " " << tf[7] << std::endl;
+        }
+
+        f.close();
+    }
+    else
+    {
+        LOG(WARNING) << "No frame was tracked :( Good luck next time!";
+    }
+}
+
+void VisualOdometry::PrintAllKeyFrames()
+{
+    std::string prefix = "AllKeyFrames_";
+
+    // obtain the current time
+    auto t = std::time(nullptr);
+    auto tm = *std::localtime(&t);
+    std::ostringstream oss;
+    oss << std::put_time(&tm, "%Y-%m-%d_%H-%M-%S");
+    auto time_str = oss.str();
+
+    std::string output_name = prefix + time_str + ".txt";
+
+    std::vector<std::vector<double>> all_tracked_keyframes = frontend_->GetAllTrackedKeyFrames();
+    if (all_tracked_keyframes.size() > 0)
+    {
+        std::ofstream f;
+        f.open(output_name);
+
+        for (const auto &tf : all_tracked_keyframes)
+        {
+            f << std::setprecision(5) << tf[0] << " "
+              << tf[1] << " " << tf[2] << " " << tf[3] << " " <<
+                tf[4] << " " << tf[5] << " " << tf[6] << " " << tf[7] << std::endl;
+        }
+
+        f.close();
+    }
+    else
+    {
+        LOG(WARNING) << "No frame was tracked :( Good luck next time!";
+    }
 }
 
 } // namespace myslam

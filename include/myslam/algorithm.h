@@ -51,6 +51,13 @@ inline Vec2 toVec2(const cv::Point2f p)
     return Vec2(p.x, p.y);
 }
 
+inline std::vector<double> Se3ToVectorD (const SE3 pose)
+{
+    auto trans = pose.translation();
+    auto quat = pose.unit_quaternion();
+    return std::vector<double>{trans.x(), trans.y(), trans.z(), quat.x(), quat.y(), quat.z(), quat.w()};
+}
+
 } // namespace myslam
 
 #endif // MYSLAM_ALGORITHM_H

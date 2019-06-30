@@ -36,8 +36,9 @@ public:
 
 private:
     std::string dataset_path_;
-    int current_image_index_ = 0;
+    int current_index_ = 0;
     std::vector<Camera::Ptr> cameras_;
+    std::vector<double> time_stamps_;
 };
 
 } // namespace myslam
