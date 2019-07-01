@@ -30,15 +30,29 @@ inline bool triangulation(const std::vector<SE3> &poses, const std::vector<Vec3>
         A.block<1, 4>(2 * i + 1, 0) = points[i][1] * m.row(2) - m.row(1);
     }
 
+    auto svd = A.bdcSvd(Eigen::ComputeThinU | Eigen::ComputeThinV);
+    p_w = (svd.matrixV().col(3) / svd.matrixV()(3, 3)).head<3>();
+
+    /* // quick fix according to ref: http://cmp.felk.cvut.cz/cmp/courses/TDV/2012W/lectures/tdv-2012-07-anot.pdf
+    Mat44 diag;
+    double max_singular_value = abs(A.lpNorm<Eigen::Infinity>());
+    double diag_factor = (1. / max_singular_value) > 1. ? 1. / max_singular_value : 1.;
+    diag << diag_factor, 0, 0, 0,
+        0, diag_factor, 0, 0,
+        0, 0, diag_factor, 0,
+        0, 0, 0, diag_factor;
+
+    A = A * diag;
+
     // ref: <<MVG>> Algorithm A5.4 Page 593
     auto svd = A.bdcSvd(Eigen::ComputeThinU | Eigen::ComputeThinV);
 
     // recover (x,y,z) from (x_, y_, z_, w_) where x_^2 + y_^2 + z_^2 + w_^2 = 1
-    p_w = (svd.matrixV().col(3) / svd.matrixV()(3, 3)).head<3>();
+    Vec4 p_w_homo = diag * svd.matrixV().col(3);
+    p_w = (p_w_homo / p_w_homo[3]).head<3>(); */
 
     // calculate the quality of the solution
     // the smaller sigma_4 / sigma_3 is, the better the result is.
-    // ref: http://cmp.felk.cvut.cz/cmp/courses/TDV/2012W/lectures/tdv-2012-07-anot.pdf
     if (svd.singularValues()[3] / svd.singularValues()[2] < 1e-2)
         return true;
     else
@@ -51,7 +65,7 @@ inline Vec2 toVec2(const cv::Point2f p)
     return Vec2(p.x, p.y);
 }
 
-inline std::vector<double> Se3ToVectorD (const SE3 pose)
+inline std::vector<double> Se3ToVectorD(const SE3 pose)
 {
     auto trans = pose.translation();
     auto quat = pose.unit_quaternion();

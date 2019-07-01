@@ -130,7 +130,7 @@ void Backend::Optimize(Map::KeyframesType &keyframes,
             edge->setId(index);
             edge->setVertex(0, vertices_poses.at(frame->keyframe_id_)); // pose
             edge->setVertex(1, vertices_landmarks.at(landmark_id));     // landmark
-            edge->setMeasurement(toVec2(feat->position_.pt));
+            edge->setMeasurement(toVec2(feat->kp_.pt));
             edge->setInformation(Mat22::Identity());
             auto rk = new g2o::RobustKernelHuber();
             rk->setDelta(sqrt(chi2_th));

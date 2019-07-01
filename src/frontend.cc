@@ -136,11 +136,11 @@ int Frontend::TriangulateNewPoints()
         {
             std::vector<Vec3> points{
                 camera_left_->Pixel2Camera(
-                    Vec2(current_frame_->features_left_[i]->position_.pt.x,
-                         current_frame_->features_left_[i]->position_.pt.y)),
+                    Vec2(current_frame_->features_left_[i]->kp_.pt.x,
+                         current_frame_->features_left_[i]->kp_.pt.y)),
                 camera_right_->Pixel2Camera(
-                    Vec2(current_frame_->features_right_[i]->position_.pt.x,
-                         current_frame_->features_right_[i]->position_.pt.y))};
+                    Vec2(current_frame_->features_right_[i]->kp_.pt.x,
+                         current_frame_->features_right_[i]->kp_.pt.y))};
             Vec3 p_w = Vec3::Zero();
 
             // 1) the quality of the solution should be good
@@ -198,7 +198,7 @@ int Frontend::EstimateCurrentPose()
             EdgeProjectionPoseOnly *edge = new EdgeProjectionPoseOnly(mp->pos_, K);
             edge->setId(index);
             edge->setVertex(0, vertex_pose);
-            edge->setMeasurement(toVec2(current_frame_->features_left_[i]->position_.pt));
+            edge->setMeasurement(toVec2(current_frame_->features_left_[i]->kp_.pt));
             edge->setInformation(Eigen::Matrix2d::Identity());
             auto rk = new g2o::RobustKernelHuber();
             rk->setDelta(sqrt(chi2_th));
@@ -283,13 +283,13 @@ int Frontend::TrackLastFrame()
             // use project point
             auto mp = kp->map_point_.lock();
             auto px = camera_left_->World2Pixel(mp->pos_, current_frame_->Pose());
-            kps_last.emplace_back(kp->position_.pt);
+            kps_last.emplace_back(kp->kp_.pt);
             kps_current.emplace_back(cv::Point2f(px[0], px[1]));
         }
         else
         {
-            kps_last.emplace_back(kp->position_.pt);
-            kps_current.emplace_back(kp->position_.pt);
+            kps_last.emplace_back(kp->kp_.pt);
+            kps_current.emplace_back(kp->kp_.pt);
         }
     }
 
@@ -346,8 +346,8 @@ int Frontend::DetectFeatures()
     for (auto &feat : current_frame_->features_left_)
     {
         cv::rectangle(mask,
-                      feat->position_.pt - cv::Point2f(10, 10),
-                      feat->position_.pt + cv::Point2f(10, 10),
+                      feat->kp_.pt - cv::Point2f(10, 10),
+                      feat->kp_.pt + cv::Point2f(10, 10),
                       0,
                       CV_FILLED);
     }
@@ -372,7 +372,7 @@ int Frontend::FindFeaturesInRight()
     std::vector<cv::Point2f> kps_left, kps_right;
     for (auto &kp : current_frame_->features_left_)
     {
-        kps_left.emplace_back(kp->position_.pt);
+        kps_left.emplace_back(kp->kp_.pt);
         auto mp = kp->map_point_.lock();
         if (mp)
         {
@@ -383,7 +383,7 @@ int Frontend::FindFeaturesInRight()
         else
         {
             // use same pixel in left iamge
-            kps_right.emplace_back(kp->position_.pt);
+            kps_right.emplace_back(kp->kp_.pt);
         }
     }
 
@@ -428,11 +428,11 @@ bool Frontend::BuildInitMap()
         // create map point from triangulation
         std::vector<Vec3> points{
             camera_left_->Pixel2Camera(
-                Vec2(current_frame_->features_left_[i]->position_.pt.x,
-                     current_frame_->features_left_[i]->position_.pt.y)),
+                Vec2(current_frame_->features_left_[i]->kp_.pt.x,
+                     current_frame_->features_left_[i]->kp_.pt.y)),
             camera_right_->Pixel2Camera(
-                Vec2(current_frame_->features_right_[i]->position_.pt.x,
-                     current_frame_->features_right_[i]->position_.pt.y))};
+                Vec2(current_frame_->features_right_[i]->kp_.pt.x,
+                     current_frame_->features_right_[i]->kp_.pt.y))};
         Vec3 p_w = Vec3::Zero();
 
         // 1) the quality of the solution should be good

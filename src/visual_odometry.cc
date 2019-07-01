@@ -53,7 +53,7 @@ void VisualOdometry::Run()
     backend_->Stop();
     viewer_->Close();
 
-    PrintAllKeyFrames();
+    // PrintAllKeyFrames();
     PrintAllFrames();
 
     LOG(INFO) << "VO exit";

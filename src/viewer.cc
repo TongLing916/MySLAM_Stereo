@@ -97,7 +97,7 @@ cv::Mat Viewer::PlotFrameImage()
         if (current_frame_->features_left_[i]->map_point_.lock())
         {
             auto feat = current_frame_->features_left_[i];
-            cv::circle(img_out, feat->position_.pt, 2, cv::Scalar(0, 250, 0), 2);
+            cv::circle(img_out, feat->kp_.pt, 2, cv::Scalar(0, 250, 0), 2);
         }
     }
     return img_out;

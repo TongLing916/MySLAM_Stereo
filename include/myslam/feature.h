@@ -28,13 +28,13 @@ public:
     }
 
     Feature(std::shared_ptr<Frame> frame, const cv::KeyPoint &kp)
-        : frame_(frame), position_(kp)
+        : frame_(frame), kp_(kp)
     {
     }
 
 public:
     std::weak_ptr<Frame> frame_;        // frame which contains this feature
-    cv::KeyPoint position_;             // extracted 2D keypoint
+    cv::KeyPoint kp_;             // extracted 2D keypoint
     std::weak_ptr<MapPoint> map_point_; // corresponding map point
     bool is_outlier_ = false;           // flag to check if it is a outlier
     bool is_on_left_image_ = true;      // flag to check if extracted from left image

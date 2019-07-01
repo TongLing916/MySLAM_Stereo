@@ -3,6 +3,7 @@
 #define MYSLAM_COMMON_INCLUDE_H
 
 // std
+#include <algorithm>
 #include <atomic>
 #include <condition_variable>
 #include <iostream>

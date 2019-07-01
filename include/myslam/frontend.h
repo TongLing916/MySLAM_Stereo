@@ -172,7 +172,7 @@ private:
 
     // utilities
     // cv::Ptr<cv::GFTTDetector> gftt_; // detector of "good features to track"
-     cv::Ptr<cv::ORB> orb_; // detector of ORB
+    cv::Ptr<cv::ORB> orb_; // detector of ORB
 };
 
 } // namespace myslam
